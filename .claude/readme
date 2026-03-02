@@ -1,0 +1,57 @@
+## Step 1 — Load context
+
+You are working inside a repository.
+
+Load and follow these files as permanent context:
+
+- .claude/context/role.md
+- .claude/context/rules.md
+- .claude/context/conventions.md
+
+Confirm when loaded.
+
+## Step 2 — Pipeline overview
+
+Each task moves through a fixed pipeline. Every stage produces an artifact file in:
+
+.claude/specs/tasks/{TASK_ID}/
+
+| Stage             | Input                                                 | Workflow                       | Output                    | Skill        |
+| ----------------- | ----------------------------------------------------- | ------------------------------ | ------------------------- | ------------ |
+| 1. Spec           | 00-raw-task.md + ui/ screenshots                      | task-to-spec.md                | 02-spec.md                | /spec        |
+| 2. Spec review    | 00-raw-task.md + 02-spec.md                           | review-spec.md                 | 03-spec-review.md         | /review-spec |
+| 3. Plan           | 02-spec.md + 03-spec-review.md                        | spec-to-implementation-plan.md | 04-implementation-plan.md | /plan        |
+| 4. Implementation | 04-implementation-plan.md                             | — (write code)                 | source files              | —            |
+| 5. Code review    | source files + 02-spec.md + 04-implementation-plan.md | code-review.md                 | 05-code-review.md         | /code-review |
+| 6. Done           | source files + all spec docs                          | implementation-done.md         | 06-implementation-done.md | /done        |
+
+## Step 3 — Run pipeline
+
+### Option A: Use skills (recommended)
+
+```
+/spec {TASK_ID}
+/review-spec {TASK_ID}
+/plan {TASK_ID}          ← single-layer task
+... implement code ...
+/code-review {TASK_ID}
+/done {TASK_ID}
+```
+
+### Option B: Manual workflow invocation
+
+```
+claude run .claude/workflows/task-to-spec.md --var TASK_ID={TASK_ID}
+claude run .claude/workflows/review-spec.md --var TASK_ID={TASK_ID}
+claude run .claude/workflows/spec-to-implementation-plan.md --var TASK_ID{TASK_ID}
+claude run .claude/workflows/code-review.md --var TASK_ID={TASK_ID}
+claude run .claude/workflows/implementation-done.md --var TASK_ID={TASK_ID}
+```
+
+---
+
+## Gate rules
+
+- Stage 3 (Plan) cannot proceed if Stage 2 result is FAIL.
+- Stage 5 (Code review) cannot proceed without Stage 3 artifact.
+- Stage 6 (Done) cannot proceed without Stages 3 and 5 artifacts.

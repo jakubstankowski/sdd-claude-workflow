@@ -1,0 +1,14 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "aplikacjawai.pl",
+  "description": "Szybka budowa aplikacji AI i custom software'u przy użyciu nowoczesnych technologii i metodyki AI-driven development.",
+  "url": "https://aplikacjawai.pl",
+  "areaServed": "PL",
+  "foundingDate": "2024",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "contact@aiweb.com"
+  }
+}
