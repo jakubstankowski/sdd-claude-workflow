@@ -2,20 +2,13 @@
 
 A **Specification-Driven Development (SDD)** workflow template for [Claude Code](https://claude.ai/code). Drop the `.claude` folder into any project and get a structured, AI-assisted pipeline that takes a raw task description all the way through to reviewed, production-ready code.
 
-Want to see what the output looks like before setting anything up? Browse `.claude/specs/tasks/ai-4/` — it contains a complete real example with all six pipeline artifacts.
-
----
-
-## Prerequisites
-
-- [Claude Code](https://claude.ai/code) installed and authenticated
-- An existing project you want to add the workflow to
+Want to see what the output looks like before setting anything up? Browse `.claude/specs/tasks/example-task/` — it contains a complete real example with all six pipeline artifacts.
 
 ---
 
 ## How it works
 
-Every task moves through a fixed pipeline. Each stage produces an artifact file stored in `.claude/specs/tasks/{TASK_ID}/`.
+Every task moves through a fixed 6-stage pipeline. Each stage produces an artifact file stored in `.claude/specs/tasks/{TASK_ID}/`.
 
 | Stage | Command | Input | Output |
 |---|---|---|---|
@@ -33,43 +26,73 @@ Every task moves through a fixed pipeline. Each stage produces an artifact file 
 
 ---
 
-## Adopting this workflow in a new project
+## How it's organized
 
-### Step 1 — Copy the `.claude` folder into your project
+```
+your-project/
+├── .claude/
+│   ├── commands/                    # Slash commands registered in Claude Code
+│   │   ├── spec.md                  #   → /spec TASK_ID
+│   │   ├── review-spec.md           #   → /review-spec TASK_ID
+│   │   ├── plan.md                  #   → /plan TASK_ID
+│   │   ├── code-review.md           #   → /code-review TASK_ID
+│   │   └── done.md                  #   → /done TASK_ID
+│   ├── context/                     # Permanent context loaded in every session
+│   │   ├── role.md                  #   Claude's persona and tech stack expertise
+│   │   ├── rules.md                 #   Coding and collaboration rules
+│   │   └── conventions.md           #   Project-specific naming, structure, patterns
+│   ├── workflows/                   # Step-by-step workflow definitions (called by commands)
+│   │   ├── task-to-spec.md
+│   │   ├── review-spec.md
+│   │   ├── spec-to-implementation-plan.md
+│   │   ├── code-review.md
+│   │   └── implementation-done.md
+│   ├── specs/
+│   │   ├── template.md              # Output template used by the Spec stage
+│   │   └── tasks/                   # One subfolder per task
+│   │       └── example-task/        #   Complete worked example — reference only, do not edit
+│   │           ├── 00-raw-task.md
+│   │           ├── 02-spec.md
+│   │           ├── 03-spec-review.md
+│   │           ├── 04-implementation-plan.md
+│   │           ├── 05-code-review.md
+│   │           └── 06-implementation-done.md
+│   └── readme                       # Quick-start Claude reads on first session init
+└── .gitignore
+```
+
+---
+
+## Prerequisites
+
+- [Claude Code](https://claude.ai/code) installed and authenticated
+- An existing project you want to add the workflow to
+
+---
+
+## Quick start
+
+**1. Copy the workflow into your project:**
 
 ```sh
-cp -r /path/to/sdd-claude-workflow/.claude /path/to/your-project/.claude
+cp -r sdd-claude-workflow/.claude your-project/.claude
+cat sdd-claude-workflow/.gitignore >> your-project/.gitignore
 ```
 
-What you are copying:
+Or click **"Use this template"** on GitHub to start a fresh repo with everything already in place.
 
-```
-.claude/
-  commands/          # Slash commands: /spec, /review-spec, /plan, /code-review, /done
-  context/           # Permanent context loaded by every workflow
-    role.md          # Claude's persona and expertise
-    rules.md         # Coding rules and collaboration rules
-    conventions.md   # Project-specific code conventions
-  workflows/         # Workflow definitions (called by commands)
-  specs/
-    template.md      # Spec output template
-    tasks/           # One subfolder per task — delete ai-4, it is only a reference example
-  readme             # Quick-start reference Claude reads on init
-```
-
-### Step 2 — Generate CLAUDE.md
-
-In your terminal, from your project root:
+**2. Generate CLAUDE.md:**
 
 ```sh
+cd your-project
 claude init
 ```
 
-This scans your codebase and writes a `CLAUDE.md` file containing the tech stack, folder structure, commands, and conventions Claude discovered. You will use this in the next step.
+This scans your codebase and writes a `CLAUDE.md` with the tech stack, folder structure, and conventions Claude discovered.
 
-### Step 3 — Initialise the workflow context
+**3. Initialise the workflow context:**
 
-Open a new Claude Code conversation in your project and paste this prompt:
+Open a new Claude Code session in your project and paste:
 
 ```
 Read .claude/readme and follow the setup steps.
@@ -79,34 +102,34 @@ Also adjust .claude/context/role.md to match the tech stack and domain found in 
 
 Claude will load the workflow, update the context files, and confirm it is ready.
 
-### Step 4 — Review the context files
+**4. Review the context files:**
 
-Quickly check the three files Claude updated:
-
-| File | What to verify |
+| File | What to check |
 |---|---|
-| `role.md` | Persona and tech stack match your project. |
-| `rules.md` | Usually fine as-is — adjust if your team has different norms. |
-| `conventions.md` | Naming, folder structure, and patterns match your actual codebase. |
+| `context/role.md` | Persona and tech stack match your project |
+| `context/rules.md` | Adjust if your team has different norms (usually fine as-is) |
+| `context/conventions.md` | Naming, folder structure, and patterns match your actual codebase |
+
+Everything is ready. Start your first task below.
 
 ---
 
-## Using the pipeline
+## Running a task
 
-### 1. Create a task folder
+**1. Create a task folder:**
 
 ```sh
-# Replace PROJ-123 with your actual task ID (from Jira, Linear, Azure DevOps, etc.)
+# Use your actual task ID from Jira, Linear, Azure DevOps, etc.
 mkdir -p .claude/specs/tasks/PROJ-123
 ```
 
-### 2. Write the raw task file
+**2. Write the raw task description:**
 
-Create `.claude/specs/tasks/PROJ-123/00-raw-task.md` with a plain-language description of what needs to be built. You can paste directly from your issue tracker.
+Create `.claude/specs/tasks/PROJ-123/00-raw-task.md` with a plain-language description of what needs to be built. Paste directly from your issue tracker if you like.
 
 Optionally add UI screenshots to `.claude/specs/tasks/PROJ-123/ui/` — Claude will analyse them during the Spec stage.
 
-### 3. Run the pipeline in Claude Code
+**3. Run the pipeline:**
 
 ```
 /spec PROJ-123
@@ -114,7 +137,7 @@ Optionally add UI screenshots to `.claude/specs/tasks/PROJ-123/ui/` — Claude w
 /plan PROJ-123
 ```
 
-Then implement the code, then:
+Implement the code based on `04-implementation-plan.md`, then:
 
 ```
 /code-review PROJ-123
@@ -125,4 +148,4 @@ Then implement the code, then:
 
 ## Reference example
 
-The `ai-4` task in this repo is a complete worked example. All six output files are present so you can see exactly what each stage produces before running the pipeline on your own task.
+`.claude/specs/tasks/example-task/` is a complete worked example. All six output files are present so you can see exactly what each stage produces. Keep it as a reference — your own tasks go alongside it in separate folders.
