@@ -75,6 +75,7 @@ your-project/
 **1. Copy the workflow into your project:**
 
 ```sh
+git clone https://github.com/jakubstankowski/sdd-claude-workflow
 cp -r sdd-claude-workflow/.claude your-project/.claude
 cat sdd-claude-workflow/.gitignore >> your-project/.gitignore
 ```
