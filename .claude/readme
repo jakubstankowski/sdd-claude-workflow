@@ -16,14 +16,15 @@ Each task moves through a fixed pipeline. Every stage produces an artifact file 
 
 .claude/specs/tasks/{TASK_ID}/
 
-| Stage             | Input                                                 | Workflow                       | Output                    | Skill        |
-| ----------------- | ----------------------------------------------------- | ------------------------------ | ------------------------- | ------------ |
-| 1. Spec           | 00-raw-task.md + ui/ screenshots                      | task-to-spec.md                | 02-spec.md                | /spec        |
-| 2. Spec review    | 00-raw-task.md + 02-spec.md                           | review-spec.md                 | 03-spec-review.md         | /review-spec |
-| 3. Plan           | 02-spec.md + 03-spec-review.md                        | spec-to-implementation-plan.md | 04-implementation-plan.md | /plan or /plan-fullstack |
-| 4. Implementation | 04-implementation-plan.md                             | — (write code)                 | source files              | —            |
-| 5. Code review    | source files + 02-spec.md + 04-implementation-plan.md | code-review.md                 | 05-code-review.md         | /code-review |
-| 6. Done           | source files + all spec docs                          | implementation-done.md         | 06-implementation-done.md | /done        |
+| Stage              | Input                                                 | Workflow                       | Output                    | Skill        |
+| ------------------ | ----------------------------------------------------- | ------------------------------ | ------------------------- | ------------ |
+| 1. Spec            | 00-raw-task.md + ui/ screenshots                      | task-to-spec.md                | 02-spec.md                | /spec        |
+| 2. Spec review     | 00-raw-task.md + 02-spec.md                           | review-spec.md                 | 03-spec-review.md         | /review-spec |
+| 3. Plan            | 02-spec.md + 03-spec-review.md                        | spec-to-implementation-plan.md | 04-implementation-plan.md | /plan or /plan-fullstack |
+| 4a. Implementation | 04-implementation-plan.md                             | — (write code)                 | source files              | —            |
+| 4b. Scaffold       | 04-implementation-plan.md                             | — (service stubs)              | source files              | /scaffold    |
+| 5. Code review     | source files + 02-spec.md + 04-implementation-plan.md | code-review.md                 | 05-code-review.md         | /code-review |
+| 6. Done            | source files + all spec docs                          | implementation-done.md         | 06-implementation-done.md | /done        |
 
 ## Step 3 — Run pipeline
 
@@ -35,6 +36,18 @@ Each task moves through a fixed pipeline. Every stage produces an artifact file 
 /plan {TASK_ID}              ← frontend-only or simple single-concern task
 /plan-fullstack {TASK_ID}    ← fullstack task (backend + frontend, parallel agents)
 ... implement code ...
+/code-review {TASK_ID}
+/done {TASK_ID}
+```
+
+#### Option A2: With scaffold (optional — implement service logic yourself)
+
+```
+/spec {TASK_ID}
+/review-spec {TASK_ID}
+/plan {TASK_ID}           ← or /plan-fullstack
+/scaffold {TASK_ID}       ← Claude implements everything except service method bodies
+... implement service methods yourself ...
 /code-review {TASK_ID}
 /done {TASK_ID}
 ```
