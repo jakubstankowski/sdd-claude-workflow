@@ -113,6 +113,31 @@ If something exists in code but was not in plan/spec → list it as:
 
 No judgment.
 
+### 7. Test Scenarios (MANDATORY)
+
+Generate test scenarios for the delivered scope. This section is required — the report is incomplete without it.
+
+Rules:
+
+- Derive scenarios ONLY from the specification (requirements, acceptance criteria, edge cases) and what was actually implemented.
+- Do NOT add scenarios for requirements marked `Not implemented` — list those requirements under "Not testable (not implemented)".
+- Cover for every implemented requirement:
+  - at least one happy-path scenario
+  - relevant edge cases (empty data, boundaries, limits)
+  - negative / error scenarios (invalid input, missing permissions, failed requests) where the spec defines behavior
+- Each scenario must be executable by a tester without reading the code.
+
+Format for each scenario:
+
+| Field | Content |
+|---|---|
+| **ID** | `TS-01`, `TS-02`, … |
+| **Requirement** | Requirement from the spec it verifies |
+| **Type** | `Happy path` / `Edge case` / `Negative` |
+| **Preconditions** | Required state, data, user role |
+| **Steps** | Numbered steps |
+| **Expected result** | Observable outcome defined by the spec |
+
 ---
 
 ## Output
@@ -140,6 +165,7 @@ Required sections:
 | **Stores** | `Exist` / `Missing` |
 | **Deviations** | Facts only |
 | **Additional Implementation** | If none → write "None" |
+| **Test Scenarios** | Scenarios per implemented requirement (mandatory, never empty) |
 
 ---
 

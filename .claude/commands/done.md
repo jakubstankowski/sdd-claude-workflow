@@ -25,4 +25,6 @@ Task ID: $ARGUMENTS
 5. Write output to:
    .claude/specs/tasks/$ARGUMENTS/06-implementation-done.md
 
-6. Print the Specification Coverage table to the user.
+6. Verify the report contains the Test Scenarios section with at least one scenario per implemented requirement. If missing, generate it before finishing.
+
+7. Print the Specification Coverage table and the list of Test Scenarios (ID + title) to the user.
