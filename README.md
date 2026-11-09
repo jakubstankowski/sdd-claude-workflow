@@ -1,5 +1,7 @@
 # SDD Claude Workflow
 
+new version https://github.com/jakubstankowski/standev-sdd
+
 A **Specification-Driven Development (SDD)** workflow template for [Claude Code](https://claude.ai/code). Drop the `.claude` folder into any project and get a structured, AI-assisted pipeline that takes a raw task description all the way through to reviewed, production-ready code.
 
 Want to see what the output looks like before setting anything up? Browse `.claude/specs/tasks/example-task/` — it contains a complete real example with all six pipeline artifacts.
